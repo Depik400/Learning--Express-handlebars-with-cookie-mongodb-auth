@@ -1,0 +1,1 @@
+exports.databaselink = "mongodb+srv://galina:galina@cluster0.ehnbj.mongodb.net/IT?retryWrites=true&w=majority";

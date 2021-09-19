@@ -1,0 +1,112 @@
+<h1>Test MongoDb tool </h1>
+<h2>Список пользователей</h2>
+<div name="userForm">
+    <input type="hidden" title="id" value="0" />
+    <div class="form-group">
+        <label for="title">Заголовок:</label>
+        <input class="form-control" id="title" />
+    </div>
+    <div class="form-group">
+        <label for="info">Содержание:</label>
+        <input class="form-control" id="info" />
+    </div>
+    <div class="panel-body">
+        <button id='save' class="btn btn-sm btn-primary">Сохранить</button>
+        <button id='drop' class="btn btn-sm btn-primary">Очистить базу данных</button>
+    </div>
+</div>
+
+    <input type="button" id="quit" value="quit">
+
+<div style="width: 700px; margin: 0 auto; margin-top: 20px;">
+    <form action="/tableget" method="GET" id="formsearch">
+        <input style="width: 100%;
+    font-size:20px; padding: 5px;" type="text" name="search" id="search" placeholder="Type text">
+    </form>
+
+</div>
+
+<div style="width: 700px; margin: 0 auto; margin-top: 20px;">
+    <table class="table table-condensed table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Заголовок</th>
+                <th>Содержание</th>
+                <th>Deletebutton</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each table}}
+            <tr>
+                <td>{{_id}}</td>
+                <td>{{title}}</td>
+                <td>{{info}}</td>
+                <td><input type="button" name="{{_id}}" id="deleteRow" value="Удалить"></td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+<script>
+
+
+$('#quit').click(() => {
+    $.ajax({
+        url:'/login',
+        method:'delete',
+        success:(data => {
+            document.location = '/';
+        })
+    })
+})
+
+
+    $('#search').change(() => {
+        $('#formsearch').submit();
+    })
+
+    window.onclick = e => {
+        if (e.target.id != 'deleteRow')
+            return;
+        var d = {
+            id: e.target.name
+        }
+        $.ajax({
+            method: 'delete',
+            url: 'TableDelete',
+            dataType: 'json',
+            data: d
+        }).then((ddd) => {
+            console.log(ddd);
+            document.location.reload();
+        })
+    }
+
+    $('#save').click(() => {
+        console.log('click');
+        d = {
+            title: $('#title').val(),
+            info: $('#info').val()
+        };
+        $.ajax({
+            url: '/tableadd',
+            method: 'put',
+            dataType: 'json',
+            data: d
+        }).then((ddddd) => {
+            setTimeout(() => document.location.reload(), 500);
+        })
+    });
+
+    $('#drop').click(() => {
+        $.ajax({
+            url: '/drop',
+            method: 'delete'
+        }).then((ddd) => {
+            console.log(ddd);
+            document.location.reload();
+        })
+    })
+   
+</script>
